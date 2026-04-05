@@ -1,0 +1,31 @@
+/* Root-level polish: font smoothing, sensible defaults, motion prefs. */
+html,
+body,
+#root {
+  height: 100%;
+  background: #060606;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+}
+
+/* Avoid iOS text auto-inflation on rotation */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Respect reduced motion — the EPK uses entry fades and hovers */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
