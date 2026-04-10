@@ -20,6 +20,11 @@ const LINKS = {
   juliaRoss: "https://open.spotify.com/artist/6fOD5mThYrqHe1cyTrKcyu",
   idoNadjar: "https://open.spotify.com/artist/4l7OpiTWZVfrcSrDeUqKBo",
   kristineBogan: "https://open.spotify.com/artist/3RSUAJlXSjuhrAd9cvRTVw",
+  emia: "https://instagram.com/thisisemia",
+  reoCragun: "https://instagram.com/reocragun",
+  ruhde: "https://instagram.com/ruhdemusic",
+  l3na: "https://instagram.com/l3namusic",
+  gess: "https://open.spotify.com/artist/4rWV3JAgD6JrUiq5mpEJxY",
 };
 
 const Ico = ({ d, size = 16 }) => (
@@ -245,11 +250,11 @@ export default function EPK() {
               { name: "Julia Ross", tag: "prev. BTS", href: LINKS.juliaRoss },
               { name: "Ido Nadjar", href: LINKS.idoNadjar },
               { name: "Kristine Bogan", tag: "prev. NewJeans", href: LINKS.kristineBogan },
-              { name: "ÊMIA" },
-              { name: "Reo Cragun" },
-              { name: "RUHDE" },
-              { name: "L3NA" },
-              { name: "GESS" },
+              { name: "ÊMIA", href: LINKS.emia },
+              { name: "Reo Cragun", href: LINKS.reoCragun },
+              { name: "RUHDE", href: LINKS.ruhde },
+              { name: "L3NA", href: LINKS.l3na },
+              { name: "GESS", href: LINKS.gess },
             ].map((c, i) => {
               const inner = (
                 <>
