@@ -456,10 +456,48 @@ a:focus-visible, button:focus-visible, input:focus-visible,
 }
 
 /* ===================================================================
-   INTRO OVERLAY — leaving transition
+   INTRO OVERLAY — blocking "drop the needle" splash.
+   The overlay stays up until the visitor clicks. On click, the needle
+   arm animates onto the record, track 01 cues, then the curtain lifts.
 =================================================================== */
-.intro-overlay { transition: opacity 0.85s ease, transform 0.85s cubic-bezier(.7,0,.2,1); }
+.intro-overlay {
+  cursor: pointer;
+  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(.7,0,.2,1);
+}
+.intro-overlay:focus { outline: 0; }
 .intro-overlay.leaving { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+
+/* Needle arm — default sits raised; on .dropping, rotates onto the disc. */
+.intro-needle {
+  transform-origin: right top;
+  transition: transform 0.6s cubic-bezier(.6, 0, .2, 1);
+}
+.intro-overlay.dropping .intro-needle {
+  transform: rotate(18deg) translate(-6px, 4px);
+}
+
+/* Disc slowly starts spinning once the needle drops. */
+.intro-overlay.dropping .intro-disc {
+  animation: intro-disc-spin 3.2s linear infinite;
+}
+@keyframes intro-disc-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Caption pulse — draws the eye to the interactive target. */
+.intro-caption { animation: intro-pulse 2.2s ease-in-out infinite; }
+@keyframes intro-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+.intro-overlay.dropping .intro-caption { animation: none; opacity: 1; color: var(--magenta); }
+.intro-overlay.dropping .intro-skip { opacity: 0; }
+
+/* Subtle hover accent — the brand wordmark warms to magenta to hint
+   the whole overlay is clickable. */
+.intro-overlay:hover .intro-brand { color: var(--magenta); transition: color 0.3s ease; }
+.intro-overlay:hover .intro-needle { transform: rotate(6deg); }
 
 /* ===================================================================
    UNIFIED NAV — shared layout for the main site Topbar and EPK nav.

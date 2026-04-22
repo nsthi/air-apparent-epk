@@ -315,46 +315,68 @@ export function LinerNotes() {
   );
 }
 
-// Intro overlay
+// Intro overlay. Blocks the page until the visitor explicitly "drops the
+// needle" — clicking anywhere triggers playback of track 01 and then
+// dismisses the curtain. Persists dismissal in localStorage so returning
+// visitors don't have to re-enter.
 export function IntroOverlay() {
+  const ctx = useContext(PlayerCtx);
   const [gone, setGone] = useState(() => {
     try { return localStorage.getItem("aa-intro-seen") === "1"; } catch { return false; }
   });
-  const [leaving, setLeaving] = useState(false);
+  const [dropping, setDropping] = useState(false);  // needle animation in progress
+  const [leaving, setLeaving] = useState(false);    // curtain fade out
 
+  // Block page scroll while the overlay is up so the page behind feels
+  // truly "locked" until the user interacts.
   useEffect(() => {
     if (gone) return;
-    const t = setTimeout(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [gone]);
+
+  const dropTheNeedle = () => {
+    if (dropping || leaving) return;
+    setDropping(true);
+    // Let the needle animation land (~650ms) before kicking off playback
+    // and fading out — feels like a real cue.
+    setTimeout(() => {
+      ctx && ctx.skipTo && ctx.skipTo(0);
       setLeaving(true);
       setTimeout(() => {
         setGone(true);
         try { localStorage.setItem("aa-intro-seen", "1"); } catch {}
-      }, 900);
-    }, 2200);
-    return () => clearTimeout(t);
-  }, [gone]);
-
-  const skip = () => {
-    setLeaving(true);
-    setTimeout(() => {
-      setGone(true);
-      try { localStorage.setItem("aa-intro-seen", "1"); } catch {}
-    }, 500);
+      }, 700);
+    }, 650);
   };
 
   if (gone) return null;
 
   return (
-    <div className={`intro-overlay ${leaving ? "leaving" : ""}`} onClick={skip}>
+    <div
+      className={`intro-overlay ${leaving ? "leaving" : ""} ${dropping ? "dropping" : ""}`}
+      onClick={dropTheNeedle}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); dropTheNeedle(); } }}
+      aria-label="Drop the needle to enter the site"
+    >
       <div className="intro-stage">
         <div className="intro-disc"><div className="intro-disc-inner" /></div>
         <div className="intro-needle" />
         <div className="intro-text">
           <div className="intro-brand">AIR APPARENT</div>
           <div className="intro-jp">未来をみたい</div>
-          <div className="intro-caption">Drop the needle · <span className="jp-sub">針を落とす</span></div>
+          <div className="intro-caption">
+            {dropping
+              ? <><span>Cueing track 01 · <span className="jp-sub">再生中</span></span></>
+              : <><span>Drop the needle · <span className="jp-sub">針を落とす</span></span></>}
+          </div>
         </div>
-        <div className="intro-skip">Click anywhere to skip</div>
+        <div className="intro-skip">
+          {dropping ? "" : "Click or press Enter to play"}
+        </div>
       </div>
     </div>
   );
