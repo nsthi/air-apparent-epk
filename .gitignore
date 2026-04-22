@@ -4,6 +4,10 @@ dist
 *.log
 .vite
 
-# Design handoff — dev-time HTML prototype loading React/Babel from unpkg.
-# Useful as a reference locally; don't deploy or version it.
+# Design handoff directories — dev-time HTML prototypes loading React/Babel
+# from unpkg. Useful as references locally; don't deploy or version them.
 design_handoff_air_apparent/
+design_updates/
+
+# Stray video/asset folders the user drops in for reference.
+video/

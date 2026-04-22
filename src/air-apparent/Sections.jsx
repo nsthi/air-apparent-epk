@@ -151,57 +151,81 @@ export function Videos() {
   );
 }
 
+// Past Lives archive — kind filter + year-jump + horizontally scrolling
+// strip of year groups.
+function classifyKind(p) {
+  const k = (p.kind || "").toLowerCase();
+  if (k.startsWith("ep") || k.includes("debut lp") || k.includes("lp ")) return "album";
+  if (k.startsWith("remix") || k.includes("remix ep")) return "remix";
+  return "single";
+}
+
 export function Projects() {
+  const [filter, setFilter] = React.useState("all"); // 'all' | 'album' | 'single' | 'remix'
+  const [activeYear, setActiveYear] = React.useState(null);
+
+  // Tag every project with its kind (memoized).
+  const tagged = useMemo(
+    () => PROJECTS.map((p, idx) => ({ ...p, _kind: classifyKind(p), _idx: idx })),
+    []
+  );
+
+  const filtered = useMemo(
+    () => (filter === "all" ? tagged : tagged.filter((p) => p._kind === filter)),
+    [tagged, filter]
+  );
+
   const byYear = useMemo(() => {
     const map = {};
-    PROJECTS.forEach((p) => {
+    filtered.forEach((p) => {
       const y = p.years;
       if (!map[y]) map[y] = [];
       map[y].push(p);
     });
     return Object.entries(map).sort((a, b) => b[0].localeCompare(a[0]));
-  }, []);
+  }, [filtered]);
 
-  const totalYears = byYear.length;
+  const allYears = useMemo(() => {
+    const set = new Set(tagged.map((p) => p.years));
+    return Array.from(set).sort((a, b) => b.localeCompare(a));
+  }, [tagged]);
+
+  const totalYears = allYears.length;
   const totalReleases = PROJECTS.length;
-  const firstYear = byYear[byYear.length - 1][0];
-  const lastYear = byYear[0][0];
+  const firstYear = allYears[allYears.length - 1];
+  const lastYear = allYears[0];
 
-  const timelineRef = React.useRef(null);
-  const [scrollState, setScrollState] = React.useState({ atStart: true, atEnd: false });
+  const counts = useMemo(
+    () => ({
+      all: tagged.length,
+      album: tagged.filter((p) => p._kind === "album").length,
+      single: tagged.filter((p) => p._kind === "single").length,
+      remix: tagged.filter((p) => p._kind === "remix").length,
+    }),
+    [tagged]
+  );
 
-  const updateScrollState = React.useCallback(() => {
-    const el = timelineRef.current;
-    if (!el) return;
-    const atStart = el.scrollLeft <= 2;
-    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
-    setScrollState({ atStart, atEnd });
+  // Smooth-scroll the strip horizontally to a year group. NB: using
+  // scrollIntoView here would also move the page vertically — we only want
+  // to move the strip.
+  const jumpToYear = React.useCallback((y) => {
+    setActiveYear(y);
+    const strip = document.getElementById("pl-strip");
+    const el = document.getElementById(`pl-year-${y}`);
+    if (!strip || !el) return;
+    const stripRect = strip.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const currentScroll = strip.scrollLeft;
+    const delta = elRect.left - stripRect.left;
+    strip.scrollTo({ left: currentScroll + delta - 16, behavior: "smooth" });
   }, []);
-
-  React.useEffect(() => {
-    updateScrollState();
-    const el = timelineRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", updateScrollState, { passive: true });
-    window.addEventListener("resize", updateScrollState);
-    return () => {
-      el.removeEventListener("scroll", updateScrollState);
-      window.removeEventListener("resize", updateScrollState);
-    };
-  }, [updateScrollState]);
-
-  const scrollBy = (dir) => {
-    const el = timelineRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * Math.round(el.clientWidth * 0.75), behavior: "smooth" });
-  };
 
   return (
-    <section className="section catalog-section" id="projects" data-screen-label="05 Projects">
+    <section className="section catalog-section catalog-v3" id="projects" data-screen-label="05 Projects">
       <div className="section-head">
         <div className="num">05 / PROJECTS <span className="kanji">作品</span></div>
         <h2 className="title">Past <em>lives</em></h2>
-        <div className="right">Back catalog<br/><span className="jp">過去作</span></div>
+        <div className="right">The archive<br/><span className="jp">過去作</span></div>
       </div>
 
       <div className="cat-stats">
@@ -211,61 +235,119 @@ export function Projects() {
         <div className="cat-stat"><div className="cs-num">∞</div><div className="cs-lab">Collaborators<br/><span className="jp-sub">共演者</span></div></div>
       </div>
 
-      <div className={`timeline-scroller tl-scroller-v2 ${scrollState.atStart ? "at-start" : ""} ${scrollState.atEnd ? "at-end" : ""}`}>
-        <div className="tl-toolbar">
-          <div className="tl-toolbar-label">
-            <span className="tl-toolbar-count">{totalReleases} releases</span>
-            <span className="tl-toolbar-range">{lastYear} ← {firstYear}</span>
-          </div>
-          <div className="tl-toolbar-ctrls">
-            <span className="tl-hint-inline">Scroll for older · <span className="jp-sub">左へ</span></span>
-            <button className="tl-arrow" onClick={() => scrollBy(-1)} disabled={scrollState.atStart} aria-label="Scroll newer">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      {/* Controls: kind filter + year jump nav */}
+      <div className="pl-controls">
+        <div className="pl-filters" role="tablist" aria-label="Filter by kind">
+          {[
+            { k: "all",    label: "All",        jp: "全部" },
+            { k: "album",  label: "EPs & LPs",  jp: "EP / LP" },
+            { k: "single", label: "Singles",    jp: "シングル" },
+            { k: "remix",  label: "Remixes",    jp: "リミックス" },
+          ].map(({ k, label, jp }) => (
+            <button
+              key={k}
+              role="tab"
+              aria-selected={filter === k}
+              className={`pl-filter ${filter === k ? "on" : ""}`}
+              onClick={() => setFilter(k)}
+            >
+              <span className="plf-label">{label}</span>
+              <span className="plf-jp jp-sub">{jp}</span>
+              <span className="plf-count">{counts[k]}</span>
             </button>
-            <button className="tl-arrow" onClick={() => scrollBy(1)} disabled={scrollState.atEnd} aria-label="Scroll older">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
+          ))}
+        </div>
+
+        <div className="pl-years" role="tablist" aria-label="Jump to year">
+          <span className="ply-label">Jump · <span className="jp-sub">跳ぶ</span></span>
+          <div className="ply-pills">
+            {allYears.map((y) => {
+              const hasResults = byYear.find(([yr]) => yr === y);
+              return (
+                <button
+                  key={y}
+                  className={`ply-pill ${activeYear === y ? "on" : ""} ${!hasResults ? "dim" : ""}`}
+                  onClick={() => jumpToYear(y)}
+                  disabled={!hasResults}
+                >
+                  {y}
+                </button>
+              );
+            })}
           </div>
         </div>
-        <div className="timeline" ref={timelineRef}>
+      </div>
+
+      {byYear.length === 0 && (
+        <div className="pl-empty">
+          Nothing matches that filter.<br/>
+          <button className="pl-reset" onClick={() => setFilter("all")}>Show all releases ↻</button>
+        </div>
+      )}
+
+      {/* Horizontal scrolling strip of year groups */}
+      <div className="pl-strip-wrap">
+        <div className="pl-strip" id="pl-strip">
           {byYear.map(([year, items], yi) => (
-            <div className="tl-year" key={year}>
-              <div className="tl-year-head">
-                <div className="tl-year-num">{year}</div>
-                <div className="tl-year-dot" />
-                <div className="tl-year-count">{items.length} release{items.length === 1 ? "" : "s"}</div>
+            <div className="pls-group" id={`pl-year-${year}`} key={year}>
+              <div className="pls-year-header">
+                <div className="pls-yn">{year}</div>
+                <div className="pls-ycount">{items.length} release{items.length === 1 ? "" : "s"}</div>
+                <div className="pls-yline" />
               </div>
-              <div className="tl-items">
+              <div className="pls-cards">
                 {items.map((p, i) => {
                   const parts = p.title.split(p.titleEm);
-                  const isLatest = yi === 0 && i === 0;
+                  const isLatest = yi === 0 && i === 0 && filter === "all";
+                  const hasLinks = !!(p.sp || p.sc || p.bc);
                   return (
-                    <div className={`tl-card ${isLatest ? "is-latest" : ""}`} key={i} style={{ animationDelay: `${(yi * 0.05) + (i * 0.04)}s` }}>
-                      {isLatest && <div className="tl-ribbon">NOW PLAYING · <span className="jp-sub">現在</span></div>}
-                      {p.cover && (
-                        <div className="tl-card-cover">
-                          <img src={p.cover} alt={`${p.title} cover`} loading="lazy" />
+                    <article
+                      className={`pls-card kind-${p._kind} ${isLatest ? "is-latest" : ""}`}
+                      key={p._idx}
+                    >
+                      <div className="plsc-top">
+                        <span className={`plsc-badge b-${p._kind}`}>
+                          {p._kind === "album" ? "EP / LP" : p._kind === "remix" ? "Remix" : "Single"}
+                        </span>
+                        {isLatest && <span className="plsc-new">NEW</span>}
+                      </div>
+
+                      <h3 className="plsc-title">
+                        {parts[0]}<em>{p.titleEm}</em>{parts[1]}
+                      </h3>
+
+                      {p.jp && <div className="plsc-jp">{p.jp}</div>}
+
+                      <p className="plsc-blurb">{p.blurb}</p>
+
+                      {hasLinks && (
+                        <div className="plsc-links">
+                          {p.sp && <a href={p.sp} target="_blank" rel="noopener" className="plscl sp" aria-label="Spotify"><span className="plscl-ico">{DSPLogos.spotify(13)}</span></a>}
+                          {p.sc && <a href={p.sc} target="_blank" rel="noopener" className="plscl sc" aria-label="SoundCloud"><span className="plscl-ico">{DSPLogos.soundcloud(13)}</span></a>}
+                          {p.bc && <a href={p.bc} target="_blank" rel="noopener" className="plscl bc" aria-label="Bandcamp"><span className="plscl-ico">{DSPLogos.bandcamp(13)}</span></a>}
                         </div>
                       )}
-                      <div className="tl-card-kind">{p.kind}</div>
-                      <div className="tl-card-title">
-                        {parts[0]}<em>{p.titleEm}</em>{parts[1]}
-                      </div>
-                      {p.jp && <div className="tl-card-jp">{p.jp}</div>}
-                      <div className="tl-card-blurb">{p.blurb}</div>
-                      <div className="tl-card-links">
-                        {p.sp && <a href={p.sp} target="_blank" rel="noopener"><span className="tl-logo">{DSPLogos.spotify(12)}</span>Spotify</a>}
-                        {p.sc && <a href={p.sc} target="_blank" rel="noopener"><span className="tl-logo">{DSPLogos.soundcloud(12)}</span>SC</a>}
-                        {p.bc && <a href={p.bc} target="_blank" rel="noopener"><span className="tl-logo">{DSPLogos.bandcamp(12)}</span>BC</a>}
-                      </div>
-                      <div className="tl-corner tr" />
-                    </div>
+                    </article>
                   );
                 })}
               </div>
             </div>
           ))}
         </div>
+        <button
+          className="pls-nav pls-nav-left"
+          aria-label="Scroll left"
+          onClick={() => document.getElementById("pl-strip")?.scrollBy({ left: -420, behavior: "smooth" })}
+        >
+          ←
+        </button>
+        <button
+          className="pls-nav pls-nav-right"
+          aria-label="Scroll right"
+          onClick={() => document.getElementById("pl-strip")?.scrollBy({ left: 420, behavior: "smooth" })}
+        >
+          →
+        </button>
       </div>
     </section>
   );

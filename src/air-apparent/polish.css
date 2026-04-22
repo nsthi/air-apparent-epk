@@ -23,82 +23,6 @@ body.has-cursor [role="button"] { cursor: none; }
 @media (pointer: coarse) { .cursor-ring { display: none !important; } }
 
 /* ===================================================================
-   TIMELINE v2 — scroll toolbar (count + range + arrow buttons) +
-   fading edge gradients so it's obvious the strip scrolls horizontally.
-=================================================================== */
-.tl-scroller-v2 { position: relative; }
-.tl-scroller-v2 .tl-hint { display: none; }  /* replaced by the toolbar */
-
-.tl-toolbar {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px;
-  padding: 0 4px 14px;
-  border-bottom: 1px solid rgba(242,236,222,0.08);
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-.tl-toolbar-label {
-  display: flex; align-items: baseline; gap: 14px;
-  font-family: var(--mono);
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-}
-.tl-toolbar-count { color: var(--magenta); font-weight: 600; }
-.tl-toolbar-range { color: var(--bone-2); opacity: 0.75; }
-.tl-toolbar-ctrls {
-  display: flex; align-items: center; gap: 10px;
-}
-.tl-hint-inline {
-  font-family: var(--mono);
-  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--bone-2); opacity: 0.65;
-}
-.tl-arrow {
-  width: 32px; height: 32px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid rgba(242,236,222,0.2);
-  background: rgba(126,60,242,0.05);
-  color: var(--bone);
-  cursor: pointer; border-radius: 2px;
-  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
-}
-.tl-arrow:hover:not(:disabled) {
-  border-color: var(--magenta); color: var(--magenta);
-  background: rgba(255,79,216,0.08);
-}
-.tl-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
-
-/* Edge fade gradients — hide when you're at that edge so the fades
-   function as a scroll affordance, not a static decoration. */
-.tl-scroller-v2 .timeline {
-  scroll-snap-type: x proximity;
-  mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
-  transition: mask-image 0.2s ease;
-}
-.tl-scroller-v2.at-start .timeline {
-  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
-}
-.tl-scroller-v2.at-end .timeline {
-  mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 100%);
-}
-.tl-scroller-v2.at-start.at-end .timeline {
-  mask-image: none;
-  -webkit-mask-image: none;
-}
-.tl-scroller-v2 .tl-year { scroll-snap-align: start; }
-
-/* Strengthen the native scrollbar so it's an obvious second affordance. */
-.tl-scroller-v2 .timeline::-webkit-scrollbar { height: 8px; }
-.tl-scroller-v2 .timeline::-webkit-scrollbar-track { background: rgba(242,236,222,0.06); }
-.tl-scroller-v2 .timeline::-webkit-scrollbar-thumb {
-  background: var(--magenta);
-  border-radius: 4px;
-  box-shadow: 0 0 8px rgba(255,79,216,0.3);
-}
-
-/* ===================================================================
    OBI — compact transport (prev/next) that fits inside the 72px rail
    without overflowing. The rail is tight on vertical real estate, so
    we tuck the transport directly under the play button.
@@ -359,32 +283,8 @@ body.has-cursor [role="button"] { cursor: none; }
 /* Cover frame tilt: keep the existing translate, but mark will-change for smooth transform. */
 .cover-frame { will-change: transform; }
 
-/* ===================================================================
-   PROJECT COVERS — new inline thumbnails for flagship releases.
-=================================================================== */
-.tl-card-cover {
-  position: relative; aspect-ratio: 1/1; overflow: hidden;
-  margin: 0 -16px 8px -16px;
-  /* Leave top-margin 0 so the NOW PLAYING ribbon stays visible above the image. */
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-/* When the card has a cover AND is the latest, push the cover below the ribbon. */
-.tl-card.is-latest .tl-card-cover { margin-top: 28px; }
-
-/* Suppress the older decorative corner thumbnail — we now ship the full cover
-   inline via <img>, making the pseudo-element corner thumb redundant. */
-.tl-card.is-latest::after { display: none; }
-.tl-card-cover img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform 0.8s cubic-bezier(.2,.8,.2,1), filter 0.4s ease;
-  filter: saturate(0.95);
-}
-.tl-card:hover .tl-card-cover img { transform: scale(1.04); filter: saturate(1.15); }
-.tl-card-cover::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(11,5,20,0.55) 100%);
-  pointer-events: none;
-}
+/* (Old .tl-card-cover overrides removed — the new Past Lives "v3" layout
+   uses .pls-card without inline cover imagery, styles in styles-v2.css.) */
 
 /* ===================================================================
    ABOUT — real portrait image
@@ -455,121 +355,10 @@ a:focus-visible, button:focus-visible, input:focus-visible,
   outline-offset: 2px;
 }
 
-/* ===================================================================
-   INTRO OVERLAY v2 — cursor-tracking needle + vinyl-click-to-drop.
-   - Native cursor is hidden while the overlay is up.
-   - A needle element follows the mouse pointer.
-   - Only clicking the spinning record triggers the drop.
-   - On drop, the needle slowly arcs to a landing spot on the outer
-     groove, track 01 cues as it settles, then the curtain lifts.
-=================================================================== */
-
-/* The overlay hides the native cursor + any app cursor-ring. */
-.intro-overlay.needle-cursor,
-.intro-overlay.needle-cursor * {
-  cursor: none !important;
-}
-body.has-cursor .intro-overlay.needle-cursor ~ .cursor-ring,
-.intro-overlay.needle-cursor ~ .cursor-ring { display: none !important; }
-
-.intro-overlay {
-  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.7,0,.2,1);
-}
-.intro-overlay:focus { outline: 0; }
-.intro-overlay.leaving { opacity: 0; transform: scale(1.03); pointer-events: none; }
-
-/* Cursor-tracking needle — a tonearm shape at the pointer, glowing magenta. */
-.intro-needle-cursor {
-  position: fixed;
-  top: 0; left: 0;
-  width: 0; height: 0;
-  z-index: 10001;
-  pointer-events: none;
-  will-change: transform;
-}
-.intro-needle-arm {
-  position: absolute;
-  /* Anchored so the needle tip sits at the cursor's exact hotspot. */
-  right: -2px; top: -4px;
-  width: 88px; height: 3px;
-  background: linear-gradient(90deg, rgba(242,236,222,0.15) 0%, var(--bone) 100%);
-  transform-origin: right center;
-  transform: rotate(-22deg);
-  box-shadow: 0 0 12px rgba(255,79,216,0.35);
-  border-radius: 1px;
-}
-.intro-needle-tip {
-  position: absolute;
-  left: -5px; top: -5px;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--magenta);
-  box-shadow: 0 0 14px var(--magenta), 0 0 28px rgba(255,79,216,0.5);
-}
-
-/* Vinyl disc → now a real button with affordance. */
-.intro-disc-btn {
-  width: 220px; height: 220px;
-  border-radius: 50%;
-  padding: 0; border: 0; outline: 0;
-  background: radial-gradient(circle, var(--ink) 10px, transparent 12px),
-              repeating-radial-gradient(circle, var(--ink) 10px, var(--ink-2) 11px, var(--ink) 12px);
-  box-shadow: 0 0 60px rgba(126,60,242,0.4), 0 0 0 0 rgba(255,79,216,0);
-  position: relative;
-  animation: intro-disc-idle-spin 14s linear infinite;
-  transition: box-shadow 0.35s ease, transform 0.35s ease;
-}
-.intro-disc-btn:hover {
-  box-shadow: 0 0 80px rgba(255,79,216,0.55), 0 0 0 2px rgba(255,79,216,0.55);
-  animation-duration: 5s;           /* nudges faster on hover — "cueing up" */
-}
-.intro-disc-btn.is-spun {
-  animation: intro-disc-idle-spin 2.8s linear infinite;
-  box-shadow: 0 0 100px rgba(255,79,216,0.6), 0 0 0 2px var(--magenta);
-}
-
-/* The inner label is the original magenta center dot. */
-.intro-disc-btn .intro-disc-inner {
-  position: absolute;
-  inset: 30%;
-  border-radius: 50%;
-  background: var(--magenta);
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 30px var(--magenta);
-}
-
-/* Subtle hint pulse around the rim — draws the eye to the interactive
-   target. Hidden once dropping starts. */
-.intro-disc-hint {
-  position: absolute; inset: -14px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,79,216,0.4);
-  animation: intro-rim-pulse 2.2s ease-in-out infinite;
-  pointer-events: none;
-}
-.intro-disc-btn.is-spun .intro-disc-hint { animation: none; opacity: 0; }
-
-@keyframes intro-rim-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50%      { transform: scale(1.08); opacity: 0; }
-}
-@keyframes intro-disc-idle-spin {
-  from { transform: rotate(0deg); } to { transform: rotate(360deg); }
-}
-
-/* Caption pulse draws attention to the instruction before interaction. */
-.intro-caption { animation: intro-pulse 2.2s ease-in-out infinite; }
-@keyframes intro-pulse {
-  0%, 100% { opacity: 0.6; }
-  50%      { opacity: 1; }
-}
-.intro-overlay.dropping .intro-caption {
-  animation: none; opacity: 1; color: var(--magenta);
-}
-.intro-overlay.dropping .intro-skip { opacity: 0; transition: opacity 0.4s ease; }
-
-/* Disable the old static needle from components.css/styles-v2.css —
-   the new cursor-tracking needle replaces it. */
-.intro-overlay .intro-needle { display: none !important; }
+/* (Old intro-overlay cursor-tracking-needle CSS removed — replaced by
+   the curtain-drop + turntable SVG intro. All its styles live in
+   styles-v2.css under the ".intro-overlay" / ".curtain*" / ".tt-*"
+   selectors.) */
 
 /* ===================================================================
    UNIFIED NAV — shared layout for the main site Topbar and EPK nav.
@@ -679,6 +468,11 @@ body.has-cursor .intro-overlay.needle-cursor ~ .cursor-ring,
 @media (max-width: 560px) {
   .unified-nav .nav-brand .jp { display: none; }
   .unified-nav .center { gap: 10px; }
+}
+/* When the obi sidebar is hidden (<960px), the topbar should start flush
+   against the viewport edge instead of offsetting by --obi-w. */
+@media (max-width: 960px) {
+  .unified-nav.topbar { left: 0 !important; }
 }
 
 /* Pad the first section below the sticky/fixed nav so content doesn't
