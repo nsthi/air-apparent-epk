@@ -456,48 +456,120 @@ a:focus-visible, button:focus-visible, input:focus-visible,
 }
 
 /* ===================================================================
-   INTRO OVERLAY — blocking "drop the needle" splash.
-   The overlay stays up until the visitor clicks. On click, the needle
-   arm animates onto the record, track 01 cues, then the curtain lifts.
+   INTRO OVERLAY v2 — cursor-tracking needle + vinyl-click-to-drop.
+   - Native cursor is hidden while the overlay is up.
+   - A needle element follows the mouse pointer.
+   - Only clicking the spinning record triggers the drop.
+   - On drop, the needle slowly arcs to a landing spot on the outer
+     groove, track 01 cues as it settles, then the curtain lifts.
 =================================================================== */
+
+/* The overlay hides the native cursor + any app cursor-ring. */
+.intro-overlay.needle-cursor,
+.intro-overlay.needle-cursor * {
+  cursor: none !important;
+}
+body.has-cursor .intro-overlay.needle-cursor ~ .cursor-ring,
+.intro-overlay.needle-cursor ~ .cursor-ring { display: none !important; }
+
 .intro-overlay {
-  cursor: pointer;
-  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(.7,0,.2,1);
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.7,0,.2,1);
 }
 .intro-overlay:focus { outline: 0; }
-.intro-overlay.leaving { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+.intro-overlay.leaving { opacity: 0; transform: scale(1.03); pointer-events: none; }
 
-/* Needle arm — default sits raised; on .dropping, rotates onto the disc. */
-.intro-needle {
-  transform-origin: right top;
-  transition: transform 0.6s cubic-bezier(.6, 0, .2, 1);
+/* Cursor-tracking needle — a tonearm shape at the pointer, glowing magenta. */
+.intro-needle-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0; height: 0;
+  z-index: 10001;
+  pointer-events: none;
+  will-change: transform;
 }
-.intro-overlay.dropping .intro-needle {
-  transform: rotate(18deg) translate(-6px, 4px);
+.intro-needle-arm {
+  position: absolute;
+  /* Anchored so the needle tip sits at the cursor's exact hotspot. */
+  right: -2px; top: -4px;
+  width: 88px; height: 3px;
+  background: linear-gradient(90deg, rgba(242,236,222,0.15) 0%, var(--bone) 100%);
+  transform-origin: right center;
+  transform: rotate(-22deg);
+  box-shadow: 0 0 12px rgba(255,79,216,0.35);
+  border-radius: 1px;
+}
+.intro-needle-tip {
+  position: absolute;
+  left: -5px; top: -5px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--magenta);
+  box-shadow: 0 0 14px var(--magenta), 0 0 28px rgba(255,79,216,0.5);
 }
 
-/* Disc slowly starts spinning once the needle drops. */
-.intro-overlay.dropping .intro-disc {
-  animation: intro-disc-spin 3.2s linear infinite;
+/* Vinyl disc → now a real button with affordance. */
+.intro-disc-btn {
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  padding: 0; border: 0; outline: 0;
+  background: radial-gradient(circle, var(--ink) 10px, transparent 12px),
+              repeating-radial-gradient(circle, var(--ink) 10px, var(--ink-2) 11px, var(--ink) 12px);
+  box-shadow: 0 0 60px rgba(126,60,242,0.4), 0 0 0 0 rgba(255,79,216,0);
+  position: relative;
+  animation: intro-disc-idle-spin 14s linear infinite;
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
 }
-@keyframes intro-disc-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+.intro-disc-btn:hover {
+  box-shadow: 0 0 80px rgba(255,79,216,0.55), 0 0 0 2px rgba(255,79,216,0.55);
+  animation-duration: 5s;           /* nudges faster on hover — "cueing up" */
+}
+.intro-disc-btn.is-spun {
+  animation: intro-disc-idle-spin 2.8s linear infinite;
+  box-shadow: 0 0 100px rgba(255,79,216,0.6), 0 0 0 2px var(--magenta);
 }
 
-/* Caption pulse — draws the eye to the interactive target. */
+/* The inner label is the original magenta center dot. */
+.intro-disc-btn .intro-disc-inner {
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+  background: var(--magenta);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 30px var(--magenta);
+}
+
+/* Subtle hint pulse around the rim — draws the eye to the interactive
+   target. Hidden once dropping starts. */
+.intro-disc-hint {
+  position: absolute; inset: -14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,79,216,0.4);
+  animation: intro-rim-pulse 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+.intro-disc-btn.is-spun .intro-disc-hint { animation: none; opacity: 0; }
+
+@keyframes intro-rim-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50%      { transform: scale(1.08); opacity: 0; }
+}
+@keyframes intro-disc-idle-spin {
+  from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+}
+
+/* Caption pulse draws attention to the instruction before interaction. */
 .intro-caption { animation: intro-pulse 2.2s ease-in-out infinite; }
 @keyframes intro-pulse {
-  0%, 100% { opacity: 0.55; }
+  0%, 100% { opacity: 0.6; }
   50%      { opacity: 1; }
 }
-.intro-overlay.dropping .intro-caption { animation: none; opacity: 1; color: var(--magenta); }
-.intro-overlay.dropping .intro-skip { opacity: 0; }
+.intro-overlay.dropping .intro-caption {
+  animation: none; opacity: 1; color: var(--magenta);
+}
+.intro-overlay.dropping .intro-skip { opacity: 0; transition: opacity 0.4s ease; }
 
-/* Subtle hover accent — the brand wordmark warms to magenta to hint
-   the whole overlay is clickable. */
-.intro-overlay:hover .intro-brand { color: var(--magenta); transition: color 0.3s ease; }
-.intro-overlay:hover .intro-needle { transform: rotate(6deg); }
+/* Disable the old static needle from components.css/styles-v2.css —
+   the new cursor-tracking needle replaces it. */
+.intro-overlay .intro-needle { display: none !important; }
 
 /* ===================================================================
    UNIFIED NAV — shared layout for the main site Topbar and EPK nav.

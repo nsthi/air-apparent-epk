@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { PlayerCtx } from "./PlayerContext.jsx";
 import { TRACKS, LINKS, DSPS, DSPS_MORE } from "./data.js";
 import { DSPLogos } from "./DSPLogos.jsx";
@@ -315,20 +315,23 @@ export function LinerNotes() {
   );
 }
 
-// Intro overlay. Blocks the page until the visitor explicitly "drops the
-// needle" — clicking anywhere triggers playback of track 01 and then
-// dismisses the curtain. Persists dismissal in localStorage so returning
-// visitors don't have to re-enter.
+// Intro overlay. The needle is attached to the cursor. Only clicking on
+// the spinning vinyl itself drops the needle — a slow, weighted animation
+// that lands on the record, cues track 01, and then lifts the curtain.
+// Clicks outside the disc do nothing. Persists in localStorage so
+// returning visitors don't re-enter.
 export function IntroOverlay() {
   const ctx = useContext(PlayerCtx);
+  const discRef = useRef(null);
   const [gone, setGone] = useState(() => {
     try { return localStorage.getItem("aa-intro-seen") === "1"; } catch { return false; }
   });
-  const [dropping, setDropping] = useState(false);  // needle animation in progress
-  const [leaving, setLeaving] = useState(false);    // curtain fade out
+  const [dropping, setDropping] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [cursor, setCursor] = useState({ x: -100, y: -100 });
+  const [landing, setLanding] = useState(null);
 
-  // Block page scroll while the overlay is up so the page behind feels
-  // truly "locked" until the user interacts.
+  // Block page scroll while the overlay is up.
   useEffect(() => {
     if (gone) return;
     const prev = document.body.style.overflow;
@@ -336,47 +339,89 @@ export function IntroOverlay() {
     return () => { document.body.style.overflow = prev; };
   }, [gone]);
 
-  const dropTheNeedle = () => {
+  // Track cursor until the needle is dropped. After that the needle is
+  // pinned to its landing position.
+  useEffect(() => {
+    if (gone || dropping) return;
+    const onMove = (e) => setCursor({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [gone, dropping]);
+
+  const dropTheNeedle = (e) => {
     if (dropping || leaving) return;
+    const disc = discRef.current;
+    if (!disc) return;
+    const r = disc.getBoundingClientRect();
+    // Land about 70% across the disc, 28% down — looks like a needle
+    // set on the outer groove, not the label.
+    setLanding({ x: r.left + r.width * 0.72, y: r.top + r.height * 0.28 });
     setDropping(true);
-    // Let the needle animation land (~650ms) before kicking off playback
-    // and fading out — feels like a real cue.
+    // Slow drop: ~1.6s for the needle, then cue track 01 as it settles.
     setTimeout(() => {
       ctx && ctx.skipTo && ctx.skipTo(0);
+    }, 1500);
+    // Curtain lifts a beat after the needle lands so the record gets to
+    // spin for a moment before the page is revealed.
+    setTimeout(() => {
       setLeaving(true);
       setTimeout(() => {
         setGone(true);
         try { localStorage.setItem("aa-intro-seen", "1"); } catch {}
-      }, 700);
-    }, 650);
+      }, 900);
+    }, 2400);
   };
 
   if (gone) return null;
 
+  const needleX = dropping && landing ? landing.x : cursor.x;
+  const needleY = dropping && landing ? landing.y : cursor.y;
+
   return (
     <div
-      className={`intro-overlay ${leaving ? "leaving" : ""} ${dropping ? "dropping" : ""}`}
-      onClick={dropTheNeedle}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); dropTheNeedle(); } }}
-      aria-label="Drop the needle to enter the site"
+      className={`intro-overlay needle-cursor ${leaving ? "leaving" : ""} ${dropping ? "dropping" : ""}`}
+      aria-label="Drop the needle onto the record to enter"
     >
       <div className="intro-stage">
-        <div className="intro-disc"><div className="intro-disc-inner" /></div>
-        <div className="intro-needle" />
+        <button
+          type="button"
+          ref={discRef}
+          className={`intro-disc intro-disc-btn ${dropping ? "is-spun" : ""}`}
+          onClick={dropTheNeedle}
+          aria-label="Drop the needle"
+          disabled={dropping || leaving}
+        >
+          <div className="intro-disc-inner" />
+          <div className="intro-disc-hint" aria-hidden="true" />
+        </button>
         <div className="intro-text">
           <div className="intro-brand">AIR APPARENT</div>
           <div className="intro-jp">未来をみたい</div>
           <div className="intro-caption">
             {dropping
-              ? <><span>Cueing track 01 · <span className="jp-sub">再生中</span></span></>
-              : <><span>Drop the needle · <span className="jp-sub">針を落とす</span></span></>}
+              ? <span>Cueing track 01 · <span className="jp-sub">再生中</span></span>
+              : <span>Click the record · <span className="jp-sub">レコードを押す</span></span>}
           </div>
         </div>
         <div className="intro-skip">
-          {dropping ? "" : "Click or press Enter to play"}
+          {dropping ? "\u00A0" : "The needle follows your cursor"}
         </div>
+      </div>
+
+      {/* Cursor-tracking needle. Moves with the mouse until you click the
+          record; then transitions slowly to the landing spot. */}
+      <div
+        className="intro-needle-cursor"
+        aria-hidden="true"
+        style={{
+          transform: `translate3d(${needleX}px, ${needleY}px, 0)`,
+          transition: dropping
+            ? "transform 1.5s cubic-bezier(.45, .05, .3, 1)"
+            : "none",
+        }}
+      >
+        <div className="intro-needle-arm" />
+        <div className="intro-needle-tip" />
       </div>
     </div>
   );
