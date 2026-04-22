@@ -136,7 +136,10 @@ export default function EPK() {
           {/* LEFT */}
           <div style={fade(0.1)}>
             <div className="sec-label">Electronic Press Kit</div>
-            <h1 className="hero-title">AIR APPARENT</h1>
+            <h1 className="hero-title epk-hero-title">
+              <span className="epk-hero-outline">AIR</span>{" "}
+              <span className="epk-hero-swash">apparent</span>
+            </h1>
             <div style={{ width: "45px", height: "2px", background: "linear-gradient(90deg,#c8a45e,transparent)", margin: "12px 0" }} />
             <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "13px", fontWeight: 400, fontStyle: "italic", color: "rgba(255,255,255,.62)", lineHeight: 1.5, marginBottom: "14px", letterSpacing: ".1px" }}>
               Brooklyn-based, Indian-American electronic, pop &amp; K-pop producer &amp; topliner
@@ -164,6 +167,17 @@ export default function EPK() {
           <div style={fade(0.2)}>
             <div className="sec-label">Music Videos</div>
             <div className="vids-grid">
+              <a href={LINKS.videoTH} target="_blank" rel="noopener">
+                <div className="vid">
+                  <img src={THUMB_TH} alt="time heals music video" loading="lazy" decoding="async"/>
+                  <div className="vid-ov">
+                    <div className="vid-play"><Ico d={PlayD} size={11}/></div>
+                    <div>
+                      <div style={{ fontFamily:"'Outfit'",fontSize:"11px",fontWeight:600 }}>time heals <span style={{ fontWeight:300,color:"rgba(255,255,255,.4)",fontSize:"10px" }}>(2025)</span></div>
+                    </div>
+                  </div>
+                </div>
+              </a>
               <a href={LINKS.video100} target="_blank" rel="noopener">
                 <div className="vid">
                   <img src={THUMB_100} alt="100% ft. ÊMIA music video" loading="lazy" decoding="async"/>
@@ -171,17 +185,6 @@ export default function EPK() {
                     <div className="vid-play"><Ico d={PlayD} size={11}/></div>
                     <div>
                       <div style={{ fontFamily:"'Outfit'",fontSize:"11px",fontWeight:600 }}>100% <span style={{ fontWeight:300,color:"rgba(255,255,255,.4)",fontSize:"10px" }}>(ft. ÊMIA)</span></div>
-                    </div>
-                  </div>
-                </div>
-              </a>
-              <a href={LINKS.videoTH} target="_blank" rel="noopener">
-                <div className="vid">
-                  <img src={THUMB_TH} alt="time heals music video" loading="lazy" decoding="async"/>
-                  <div className="vid-ov">
-                    <div className="vid-play"><Ico d={PlayD} size={11}/></div>
-                    <div>
-                      <div style={{ fontFamily:"'Outfit'",fontSize:"11px",fontWeight:600 }}>time heals</div>
                     </div>
                   </div>
                 </div>

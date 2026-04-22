@@ -1,0 +1,294 @@
+/* AIR APPARENT — EPK skin.
+   Retones the existing EPK (gold/black) into the Our June vinyl palette
+   (violet/magenta/ink/bone) and swaps its font stack into the main
+   design system (Space Grotesk + JetBrains Mono + Noto Serif JP),
+   without rebuilding the JSX. Uses body.epk-root scoping so these
+   rules only apply on the /epk route. */
+
+/* Design tokens inherited from styles.css. The :root custom properties
+   (--violet, --magenta, --ink, --bone) are already defined in
+   air-apparent/styles.css which is loaded by EPKPage.jsx. */
+
+/* ---------- 1. Typography ------------------------------------------------ */
+body.epk-root,
+body.epk-root * {
+  font-family: var(--mono), "JetBrains Mono", ui-monospace, monospace !important;
+  font-synthesis: none;
+}
+
+/* Headlines and the big AIR APPARENT wordmark use Space Grotesk. The
+   EPK's <h1> / bold elements get the display font by weight+tag. */
+body.epk-root h1,
+body.epk-root h2,
+body.epk-root h3,
+body.epk-root .stat-num {
+  font-family: var(--display), "Space Grotesk", sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+body.epk-root h1 { letter-spacing: -0.04em !important; }
+
+/* Italic taglines (the small "brooklyn-based, Indian-American..." line)
+   pick up the Fraunces swash face used on the main site. */
+body.epk-root p[style*="italic"],
+body.epk-root span[style*="italic"],
+body.epk-root em {
+  font-family: var(--swash), "Fraunces", serif !important;
+  font-style: italic !important;
+  font-variation-settings: "opsz" 72, "SOFT" 80, "WONK" 1;
+}
+
+/* ---------- 2. Background + grain --------------------------------------- */
+body.epk-root {
+  background: var(--ink) !important;
+}
+/* Re-enable the grain + scanline overlays that the main site uses — they
+   were suppressed on body.epk-root in polish.css. */
+body.epk-root::before,
+body.epk-root::after { display: block !important; }
+body.epk-root::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: var(--grain);
+  pointer-events: none; z-index: 9998;
+  opacity: 0.7; mix-blend-mode: overlay;
+}
+body.epk-root::after {
+  content: ''; position: fixed; inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 40%, rgba(11,5,20,0.6) 100%);
+  pointer-events: none; z-index: 9997; mix-blend-mode: screen;
+}
+
+/* Outer EPK wrapper (has inline `background:#060606`). Repaint it so the
+   grain above reads over ink, not a flat near-black. */
+body.epk-root > #root > div > div[style*="background: rgb(6, 6, 6)"],
+body.epk-root > #root > div[style*="background: rgb(6, 6, 6)"] {
+  background: var(--ink) !important;
+}
+
+/* ---------- 3. Color substitutions: gold → magenta/violet --------------- */
+
+/* The EPK uses #c8a45e (gold) for accents. We retint to magenta for every
+   class-based hit and many inline occurrences. */
+body.epk-root .gl { color: var(--magenta) !important; }
+body.epk-root .stat-num { color: var(--magenta) !important; }
+body.epk-root .link { color: inherit; border-bottom-color: rgba(255,79,216,0.35) !important; }
+body.epk-root .link:hover { color: var(--magenta) !important; border-bottom-color: var(--magenta) !important; }
+
+/* Section labels ("Electronic Press Kit", "Music Videos", "Notable Collaborators"). */
+body.epk-root .sec-label {
+  font-family: var(--mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.22em !important;
+  color: var(--magenta) !important;
+  opacity: 0.85;
+  font-weight: 500 !important;
+  margin-bottom: 12px !important;
+}
+body.epk-root .sec-label::after {
+  background: linear-gradient(90deg, rgba(255,79,216,0.4), transparent) !important;
+}
+
+/* Collaborator pills (Krysta Youngs / Julia Ross / etc. + "PREV. BTS" tag). */
+body.epk-root .pill {
+  border-color: rgba(242,236,222,0.15) !important;
+  background: rgba(126,60,242,0.04) !important;
+  color: var(--bone-2) !important;
+  border-radius: 2px !important;
+  font-family: var(--mono) !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  font-size: 10px !important;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease !important;
+}
+body.epk-root .pill:hover {
+  border-color: var(--magenta) !important;
+  color: var(--bone) !important;
+  background: rgba(255,79,216,0.06) !important;
+}
+body.epk-root .pill .tag {
+  color: var(--magenta) !important;
+  opacity: 0.75;
+  font-family: var(--mono) !important;
+  letter-spacing: 0.22em !important;
+  font-size: 8px !important;
+}
+
+/* Cards */
+body.epk-root .card {
+  border-radius: 2px !important;
+  border-color: rgba(242,236,222,0.1) !important;
+  background: rgba(126,60,242,0.03) !important;
+}
+body.epk-root .card:hover {
+  border-color: var(--magenta) !important;
+  box-shadow: 0 0 0 1px rgba(255,79,216,0.1), 0 14px 30px -10px rgba(255,79,216,0.15) !important;
+}
+
+/* ---------- 4a. Hero title: AIR / apparent split ----------------------- */
+body.epk-root .epk-hero-title {
+  font-family: var(--display), "Space Grotesk", sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 0.92 !important;
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 14px !important;
+  flex-wrap: wrap !important;
+  white-space: normal !important;
+  font-size: clamp(38px, 8.5vw, 72px) !important;
+}
+body.epk-root .epk-hero-outline {
+  font-family: var(--display), "Space Grotesk", sans-serif !important;
+  font-weight: 700 !important;
+  color: transparent !important;
+  -webkit-text-stroke: 1.5px var(--bone);
+  letter-spacing: -0.04em !important;
+  text-transform: uppercase !important;
+}
+body.epk-root .epk-hero-swash {
+  font-family: var(--swash), "Fraunces", serif !important;
+  font-style: italic !important;
+  font-weight: 300 !important;
+  color: var(--magenta) !important;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1 !important;
+  letter-spacing: -0.015em !important;
+  text-transform: none !important;
+  font-size: 1.05em !important;
+  line-height: 0.9 !important;
+}
+
+/* Pill links (the "LISTEN TO A-SIDES" / "K-POP DEMOS" buttons). */
+body.epk-root .pill-link {
+  border-color: rgba(242,236,222,0.18) !important;
+  color: var(--bone) !important;
+  background: rgba(126,60,242,0.04) !important;
+  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease !important;
+  transform: none !important;            /* kill the translate-y jump on hover */
+  border-radius: 2px !important;         /* match the square vinyl aesthetic */
+  font-family: var(--mono) !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+}
+body.epk-root .pill-link:hover {
+  border-color: var(--magenta) !important;
+  background: rgba(255,79,216,0.08) !important;
+  color: var(--magenta) !important;
+  transform: none !important;            /* layout-stable */
+}
+
+/* CTAs */
+body.epk-root .cta-p {
+  background: var(--magenta) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--magenta) !important;
+  box-shadow: 0 0 24px rgba(255,79,216,0.3) !important;
+  border-radius: 2px !important;
+  font-family: var(--mono) !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+}
+body.epk-root .cta-s {
+  color: var(--bone) !important;
+  border-color: rgba(242,236,222,0.2) !important;
+  background: transparent !important;
+  border-radius: 2px !important;
+  font-family: var(--mono) !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+}
+body.epk-root .cta-s:hover {
+  border-color: var(--magenta) !important;
+  color: var(--magenta) !important;
+}
+
+/* Video card */
+body.epk-root .vid {
+  border-radius: 2px !important;
+  outline: 1px solid rgba(242,236,222,0.1) !important;
+}
+body.epk-root .vid-play {
+  background: rgba(255,79,216,0.15) !important;
+  color: var(--magenta) !important;
+}
+
+/* Social icon buttons */
+body.epk-root .social-btn {
+  border: 1px solid rgba(242,236,222,0.1) !important;
+  color: var(--bone-2) !important;
+  border-radius: 2px !important;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease !important;
+}
+body.epk-root .social-btn:hover {
+  color: var(--magenta) !important;
+  border-color: var(--magenta) !important;
+  background: rgba(255,79,216,0.06) !important;
+}
+
+/* ---------- 4. Inline-style overrides for the gold accents -------------- */
+/* The EPK bakes the gold hex into several inline background/color styles.
+   These broad attribute selectors catch the rgb() form of #c8a45e. */
+body.epk-root [style*="rgb(200, 164, 94)"] { color: var(--magenta) !important; }
+body.epk-root [style*="background: rgb(200, 164, 94)"] { background: var(--magenta) !important; color: var(--ink) !important; }
+body.epk-root svg[stroke="#c8a45e"],
+body.epk-root svg [stroke="#c8a45e"] { stroke: var(--magenta) !important; }
+body.epk-root [style*="rgba(200, 164, 94"] { background-color: rgba(255,79,216,0.08) !important; color: var(--magenta) !important; }
+
+/* The 45px gradient underline under the headline */
+body.epk-root div[style*="linear-gradient(90deg, rgb(200, 164, 94)"] {
+  background: linear-gradient(90deg, var(--magenta), transparent) !important;
+}
+
+/* Triangle "A" logo */
+body.epk-root svg path[stroke="#c8a45e"],
+body.epk-root svg line[stroke="#c8a45e"] { stroke: var(--magenta) !important; }
+
+/* Pure white copy — softened to bone so the palette reads as intentional. */
+body.epk-root [style*="color: rgb(255, 255, 255)"] { color: var(--bone) !important; }
+/* Semi-transparent white copy maps to bone-tinted alpha. */
+body.epk-root [style*="color: rgba(255, 255, 255, 0.85"] { color: var(--bone) !important; }
+body.epk-root [style*="color: rgba(255, 255, 255, 0.62"] { color: var(--bone-2) !important; }
+body.epk-root [style*="color: rgba(255, 255, 255, 0.65"] { color: var(--bone) !important; }
+body.epk-root [style*="color: rgba(255, 255, 255, 0.45"] { color: rgba(216,207,187,0.7) !important; }
+body.epk-root [style*="color: rgba(255, 255, 255, 0.4"] { color: rgba(216,207,187,0.65) !important; }
+body.epk-root [style*="color: rgba(255, 255, 255, 0.3"] { color: rgba(216,207,187,0.5) !important; }
+body.epk-root [style*="color: rgba(255, 255, 255, 0.12"] { color: rgba(216,207,187,0.22) !important; }
+
+/* ---------- 5. Selection color match ----------------------------------- */
+body.epk-root ::selection { background: var(--magenta); color: var(--ink); }
+
+/* ---------- 6. Page edge padding + sticky nav spacing ------------------ */
+/* The sticky .epk-nav is ~44px tall; reserve scroll-padding so in-page
+   anchors don't land under it. */
+body.epk-root { scroll-padding-top: 56px; }
+
+/* Footer "back to home" line (added in EPKPage.jsx). */
+.epk-footer-home {
+  text-align: center;
+  padding: 36px 20px 28px;
+  border-top: 1px solid rgba(242,236,222,0.08);
+  margin-top: 40px;
+  background: var(--ink);
+  position: relative; z-index: 2;
+}
+.epk-footer-home a {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--bone-2);
+  padding: 10px 18px;
+  border: 1px solid rgba(242,236,222,0.2);
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+  display: inline-block;
+}
+.epk-footer-home a:hover {
+  color: var(--magenta); border-color: var(--magenta);
+  background: rgba(255,79,216,0.06);
+}
+.epk-footer-home .jp {
+  display: block; margin-top: 14px;
+  font-family: var(--jp-serif); font-weight: 700;
+  font-size: 14px; color: var(--violet-bright);
+  letter-spacing: 0.05em;
+}

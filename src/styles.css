@@ -1,24 +1,17 @@
-/* Root-level polish: font smoothing, sensible defaults, motion prefs. */
-html,
-body,
-#root {
-  height: 100%;
-  background: #060606;
-}
-
+/* Root-level defaults. Do NOT constrain html/body height here — each page
+   (air-apparent, epk) manages its own background + scroll. */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   font-synthesis: none;
+  background: #0b0514;
 }
 
 /* Avoid iOS text auto-inflation on rotation */
-html {
-  -webkit-text-size-adjust: 100%;
-}
+html { -webkit-text-size-adjust: 100%; }
 
-/* Respect reduced motion — the EPK uses entry fades and hovers */
+/* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

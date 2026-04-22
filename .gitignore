@@ -3,3 +3,7 @@ dist
 .DS_Store
 *.log
 .vite
+
+# Design handoff — dev-time HTML prototype loading React/Babel from unpkg.
+# Useful as a reference locally; don't deploy or version it.
+design_handoff_air_apparent/
