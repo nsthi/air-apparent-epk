@@ -91,20 +91,37 @@ export default function EPK() {
         .social-btn:hover{color:#c8a45e;border-color:rgba(200,164,94,.25);background:rgba(200,164,94,.04)}
         .social-btn:active{transform:scale(.96)}
         .hero-title{font-family:'Outfit',sans-serif;font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:4px;font-size:clamp(34px,8.2vw,58px);white-space:nowrap;text-wrap:nowrap}
+        .hero-rule{width:45px;height:2px;background:linear-gradient(90deg,#c8a45e,transparent);margin:12px 0}
+        .hero-tagline{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(255,255,255,.62);line-height:1.5;margin-bottom:14px;letter-spacing:.1px}
+        .hero-blurb{font-size:12px;line-height:1.75;color:rgba(255,255,255,.45);margin-bottom:16px}
+        .hero-ctas{display:flex;gap:8px;flex-wrap:wrap}
+        .stat-num{font-family:'Outfit';font-size:20px;font-weight:700;color:#c8a45e;letter-spacing:-0.5px}
+        .stat-card{padding:12px 14px;text-align:center}
+        .stat-label{font-size:8px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
         .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:18px}
         .vids-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
         .stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
         .highlights-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
         .page{max-width:940px;margin:0 auto;padding:24px 32px 32px}
         @media (max-width:760px){
-          .main-grid{grid-template-columns:1fr;gap:28px}
+          .main-grid{grid-template-columns:1fr;gap:24px;margin-bottom:14px}
           .highlights-grid{grid-template-columns:1fr;gap:10px}
-          .hero-title{font-size:clamp(40px,12vw,64px)}
-          .page{padding:20px 18px 28px}
+          .hero-title{font-size:clamp(40px,11.5vw,62px);letter-spacing:-1.5px}
+          .hero-rule{margin:14px 0}
+          .hero-tagline{font-size:14px;line-height:1.55;margin-bottom:16px}
+          .hero-blurb{font-size:13px;line-height:1.7;margin-bottom:18px}
+          .hero-ctas{gap:10px}
+          .hero-ctas .cta{flex:1 1 auto;justify-content:center;padding:12px 18px;font-size:11px;min-height:44px}
+          .page{padding:22px 22px 32px}
+          .vids-grid{gap:10px;margin-bottom:14px}
         }
         @media (max-width:420px){
-          .vids-grid{grid-template-columns:1fr}
-          .stats-grid{gap:5px}
+          .vids-grid{grid-template-columns:1fr;gap:10px}
+          .stats-grid{grid-template-columns:1fr 1fr 1fr;gap:5px}
+          .stat-num{font-size:17px}
+          .stat-card{padding:10px 6px}
+          .hero-title{font-size:clamp(38px,11vw,52px);letter-spacing:-1px;white-space:normal;text-wrap:balance}
+          .page{padding:20px 18px 28px}
         }
         @media (prefers-reduced-motion:reduce){
           *,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important}
@@ -140,11 +157,11 @@ export default function EPK() {
               <span className="epk-hero-outline">AIR</span>{" "}
               <span className="epk-hero-swash">apparent</span>
             </h1>
-            <div style={{ width: "45px", height: "2px", background: "linear-gradient(90deg,#c8a45e,transparent)", margin: "12px 0" }} />
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "13px", fontWeight: 400, fontStyle: "italic", color: "rgba(255,255,255,.62)", lineHeight: 1.5, marginBottom: "14px", letterSpacing: ".1px" }}>
+            <div className="hero-rule" />
+            <p className="hero-tagline">
               Brooklyn-based, Indian-American electronic, pop &amp; K-pop producer &amp; topliner
             </p>
-            <p style={{ fontSize: "12px", lineHeight: 1.75, color: "rgba(255,255,255,.45)", marginBottom: "16px" }}>
+            <p className="hero-blurb">
               4.2M+ total streams. Editorial features on Spotify &amp; Earmilk. Music placed on NCIS: Los Angeles.{" "}
               <a href={LINKS.dance} target="_blank" rel="noopener" className="link gl">"Dance"</a>{" "}
               crossed 1M streams.{" "}
@@ -153,7 +170,7 @@ export default function EPK() {
               <a href={LINKS.oneHundred} target="_blank" rel="noopener" className="link gl">"100%"</a>{" "}
               (ft. ÊMIA) remixed w/ RUHDE charted in Indonesia.
             </p>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <div className="hero-ctas">
               <a href={LINKS.aSides} target="_blank" rel="noopener" className="cta cta-p">
                 <Ico d={PlayD} size={12}/> Listen to A-Sides
               </a>
@@ -197,9 +214,9 @@ export default function EPK() {
                 { n: "1M+", l: '"Dance"' },
                 { n: "#4", l: "Beatport" },
               ].map((s, i) => (
-                <div key={i} className="card" style={{ padding: "12px 14px", textAlign: "center" }}>
-                  <div className="stat-num" style={{ fontFamily: "'Outfit'", fontSize: "20px", fontWeight: 700, color: "#c8a45e", letterSpacing: "-0.5px" }}>{s.n}</div>
-                  <div style={{ fontSize: "8px", color: "rgba(255,255,255,.3)", letterSpacing: "1px", textTransform: "uppercase", marginTop: "2px" }}>{s.l}</div>
+                <div key={i} className="card stat-card">
+                  <div className="stat-num">{s.n}</div>
+                  <div className="stat-label">{s.l}</div>
                 </div>
               ))}
             </div>
