@@ -49,9 +49,9 @@ export default function EPK() {
   });
 
   return (
-    <div style={{ background: "#060606", color: "#fff", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ background: "#060606", color: "#fff", minHeight: "100vh", fontFamily: "'Manrope', sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&family=DM+Sans:ital,wght@1,300;1,400&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
         html,body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
         a{color:inherit;text-decoration:none}
@@ -92,8 +92,8 @@ export default function EPK() {
         .social-btn:active{transform:scale(.96)}
         .hero-title{font-family:'Outfit',sans-serif;font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:4px;font-size:clamp(34px,8.2vw,58px);white-space:nowrap;text-wrap:nowrap}
         .hero-rule{width:45px;height:2px;background:linear-gradient(90deg,#c8a45e,transparent);margin:12px 0}
-        .hero-tagline{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(255,255,255,.62);line-height:1.5;margin-bottom:14px;letter-spacing:.1px}
-        .hero-blurb{font-size:12px;line-height:1.75;color:rgba(255,255,255,.45);margin-bottom:16px}
+        .hero-tagline{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(255,255,255,.72);line-height:1.5;margin-bottom:14px;letter-spacing:.1px}
+        .hero-blurb{font-size:13px;line-height:1.75;color:rgba(255,255,255,.68);margin-bottom:16px}
         .hero-ctas{display:flex;gap:8px;flex-wrap:wrap}
         .stat-num{font-family:'Outfit';font-size:20px;font-weight:700;color:#c8a45e;letter-spacing:-0.5px}
         .stat-card{padding:12px 14px;text-align:center}
@@ -230,7 +230,7 @@ export default function EPK() {
               <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "rgba(200,164,94,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: "#c8a45e", fontSize: "11px" }}>★</div>
               <span style={{ fontFamily: "'Outfit'", fontSize: "11px", fontWeight: 600 }}>Songwriting Awards</span>
             </div>
-            <p style={{ fontSize: "11px", lineHeight: 1.7, color: "rgba(255,255,255,.4)" }}>
+            <p style={{ fontSize: "12px", lineHeight: 1.7, color: "rgba(255,255,255,.62)" }}>
               <span className="gl">ISC Finalist</span>, Best EDM Track. "Unsigned Only" finalist 2021 for{" "}
               <a href={LINKS.badForMe} target="_blank" rel="noopener" className="link" style={{ color: "rgba(255,255,255,.6)" }}>"Bad for Me"</a>{" "}
               (ft. GESS). Semifinalist 2019 for{" "}
@@ -243,7 +243,7 @@ export default function EPK() {
               <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "rgba(200,164,94,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: "#c8a45e", fontSize: "11px" }}>♪</div>
               <span style={{ fontFamily: "'Outfit'", fontSize: "11px", fontWeight: 600 }}>Live &amp; Events</span>
             </div>
-            <p style={{ fontSize: "11px", lineHeight: 1.7, color: "rgba(255,255,255,.4)" }}>
+            <p style={{ fontSize: "12px", lineHeight: 1.7, color: "rgba(255,255,255,.62)" }}>
               Performed at <span style={{ color: "rgba(255,255,255,.65)" }}>Joy Ruckus Club 4</span>, the world's largest virtual Asian music festival. Attendee, <span style={{ color: "rgba(255,255,255,.65)" }}>Song Camp by M Universe</span> (Seoul, Nov 2024).
             </p>
           </div>
@@ -253,7 +253,7 @@ export default function EPK() {
               <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "rgba(200,164,94,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: "#c8a45e", fontSize: "11px" }}>◆</div>
               <span style={{ fontFamily: "'Outfit'", fontSize: "11px", fontWeight: 600 }}>Press &amp; Sync</span>
             </div>
-            <p style={{ fontSize: "11px", lineHeight: 1.7, color: "rgba(255,255,255,.4)" }}>
+            <p style={{ fontSize: "12px", lineHeight: 1.7, color: "rgba(255,255,255,.62)" }}>
               <span style={{ color: "rgba(255,255,255,.65)" }}>Spotify</span> editorial playlisting.{" "}
               <span style={{ color: "rgba(255,255,255,.65)" }}>Earmilk</span> feature.{" "}
               Sync on <span style={{ color: "rgba(255,255,255,.65)" }}>NCIS: Los Angeles</span>. Press in American Songwriter, BroadwayWorld, Prelude Press.
