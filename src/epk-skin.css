@@ -9,33 +9,72 @@
    (--violet, --magenta, --ink, --bone) are already defined in
    air-apparent/styles.css which is loaded by EPKPage.jsx. */
 
-/* ---------- 1. Typography ------------------------------------------------ */
+/* ---------- 1. Typography ------------------------------------------------
+   Body copy uses Inter — it's a workhorse screen-readability font that
+   pairs cleanly with Space Grotesk's geometric forms. Reserve mono for
+   the few places it carries design meaning (labels, tags, metadata).
+*/
 body.epk-root,
-body.epk-root * {
-  font-family: var(--mono), "JetBrains Mono", ui-monospace, monospace !important;
+body.epk-root p,
+body.epk-root span,
+body.epk-root div,
+body.epk-root a,
+body.epk-root li,
+body.epk-root td,
+body.epk-root button {
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif !important;
   font-synthesis: none;
+  font-feature-settings: "ss01", "cv02", "cv11";   /* Inter's nicer 'a', 'l', '1' alternates */
 }
 
-/* Headlines and the big AIR APPARENT wordmark use Space Grotesk. The
-   EPK's <h1> / bold elements get the display font by weight+tag. */
+/* Headlines and the big AIR APPARENT wordmark stay on Space Grotesk for
+   that confident display feel. */
 body.epk-root h1,
 body.epk-root h2,
-body.epk-root h3,
-body.epk-root .stat-num {
+body.epk-root h3 {
   font-family: var(--display), "Space Grotesk", sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: -0.02em !important;
 }
 body.epk-root h1 { letter-spacing: -0.04em !important; }
 
-/* Italic taglines (the small "brooklyn-based, Indian-American..." line)
-   pick up the Fraunces swash face used on the main site. */
+/* Stat numbers (4.2M+ / 1M+ / #4) — display sans, big and tight. */
+body.epk-root .stat-num {
+  font-family: var(--display), "Space Grotesk", sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Mono ONLY where it carries design-system meaning — small uppercase
+   labels with letter-tracking. */
+body.epk-root .sec-label,
+body.epk-root .pill,
+body.epk-root .pill .tag,
+body.epk-root .pill-link,
+body.epk-root .cta,
+body.epk-root .unified-nav,
+body.epk-root .unified-nav *,
+body.epk-root .epk-footer-home,
+body.epk-root .epk-footer-home a {
+  font-family: var(--mono), "JetBrains Mono", ui-monospace, monospace !important;
+}
+
+/* Italic emphasis (the "Brooklyn-based..." tagline + .gl-emphasized
+   single words) → Fraunces swash. */
 body.epk-root p[style*="italic"],
 body.epk-root span[style*="italic"],
 body.epk-root em {
   font-family: var(--swash), "Fraunces", serif !important;
   font-style: italic !important;
   font-variation-settings: "opsz" 72, "SOFT" 80, "WONK" 1;
+}
+
+/* Body sizing: Inter benefits from a slightly larger base than mono. */
+body.epk-root p {
+  font-size: 13.5px !important;
+  line-height: 1.65 !important;
+  letter-spacing: 0 !important;
 }
 
 /* ---------- 2. Background + grain --------------------------------------- */
