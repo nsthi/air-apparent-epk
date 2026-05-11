@@ -84,6 +84,9 @@ export default function EPK() {
         .cta-p:active{transform:translateY(0) scale(.96)}
         .cta-s{background:transparent;color:#c8a45e;border:1px solid rgba(200,164,94,.35)}
         .cta-s:hover{background:rgba(200,164,94,.08);border-color:rgba(200,164,94,.55)}
+        .cta-k{background:linear-gradient(135deg,#e94d8a,#9c2d6d);color:#fff;border:none;box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 2px 8px rgba(0,0,0,.25)}
+        .cta-k:hover{box-shadow:0 1px 0 rgba(255,255,255,.28) inset,0 8px 24px rgba(233,77,138,.32),0 2px 8px rgba(0,0,0,.3);transform:translateY(-1px)}
+        .cta-k:active{transform:translateY(0) scale(.96)}
         .sec-label{font-family:'Outfit',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(200,164,94,.6);margin-bottom:8px;display:flex;align-items:center;gap:10px}
         .sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(200,164,94,.25),transparent)}
         .social-btn{position:relative;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,.45);cursor:pointer;transition-property:color,border-color,background-color,transform;transition-duration:.25s;transition-timing-function:cubic-bezier(.2,0,0,1)}
@@ -92,8 +95,8 @@ export default function EPK() {
         .social-btn:active{transform:scale(.96)}
         .hero-title{font-family:'Outfit',sans-serif;font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:4px;font-size:clamp(34px,8.2vw,58px);white-space:nowrap;text-wrap:nowrap}
         .hero-rule{width:45px;height:2px;background:linear-gradient(90deg,#c8a45e,transparent);margin:12px 0}
-        .hero-tagline{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(255,255,255,.72);line-height:1.5;margin-bottom:14px;letter-spacing:.1px}
-        .hero-blurb{font-size:13px;line-height:1.75;color:rgba(255,255,255,.68);margin-bottom:16px}
+        .hero-tagline{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;font-style:italic;color:rgba(255,255,255,.78);line-height:1.55;margin-bottom:14px;letter-spacing:.1px}
+        .hero-blurb{font-size:14px;font-weight:400;line-height:1.7;color:rgba(255,255,255,.78);margin-bottom:18px;letter-spacing:.1px}
         .hero-ctas{display:flex;gap:8px;flex-wrap:wrap}
         .stat-num{font-family:'Outfit';font-size:20px;font-weight:700;color:#c8a45e;letter-spacing:-0.5px}
         .stat-card{padding:12px 14px;text-align:center}
@@ -172,10 +175,10 @@ export default function EPK() {
             </p>
             <div className="hero-ctas">
               <a href={LINKS.aSides} target="_blank" rel="noopener" className="cta cta-p">
-                <Ico d={PlayD} size={12}/> Listen to A-Sides
+                <Ico d={PlayD} size={12}/> Artist Project Tracks
               </a>
-              <a href={LINKS.kpopDemos} target="_blank" rel="noopener" className="cta cta-s">
-                K-Pop Demos <Arrow />
+              <a href={LINKS.kpopDemos} target="_blank" rel="noopener" className="cta cta-k">
+                <Ico d={PlayD} size={12}/> K-Pop Demos
               </a>
             </div>
           </div>
@@ -230,7 +233,7 @@ export default function EPK() {
               <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "rgba(200,164,94,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: "#c8a45e", fontSize: "11px" }}>★</div>
               <span style={{ fontFamily: "'Outfit'", fontSize: "11px", fontWeight: 600 }}>Songwriting Awards</span>
             </div>
-            <p style={{ fontSize: "12px", lineHeight: 1.7, color: "rgba(255,255,255,.62)" }}>
+            <p style={{ fontSize: "13px", lineHeight: 1.7, color: "rgba(255,255,255,.72)" }}>
               <span className="gl">ISC Finalist</span>, Best EDM Track. "Unsigned Only" finalist 2021 for{" "}
               <a href={LINKS.badForMe} target="_blank" rel="noopener" className="link" style={{ color: "rgba(255,255,255,.6)" }}>"Bad for Me"</a>{" "}
               (ft. GESS). Semifinalist 2019 for{" "}
@@ -243,7 +246,7 @@ export default function EPK() {
               <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "rgba(200,164,94,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: "#c8a45e", fontSize: "11px" }}>♪</div>
               <span style={{ fontFamily: "'Outfit'", fontSize: "11px", fontWeight: 600 }}>Live &amp; Events</span>
             </div>
-            <p style={{ fontSize: "12px", lineHeight: 1.7, color: "rgba(255,255,255,.62)" }}>
+            <p style={{ fontSize: "13px", lineHeight: 1.7, color: "rgba(255,255,255,.72)" }}>
               Performed at <span style={{ color: "rgba(255,255,255,.65)" }}>Joy Ruckus Club 4</span>, the world's largest virtual Asian music festival. Attendee, <span style={{ color: "rgba(255,255,255,.65)" }}>Song Camp by M Universe</span> (Seoul, Nov 2024).
             </p>
           </div>
@@ -253,7 +256,7 @@ export default function EPK() {
               <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "rgba(200,164,94,.08)", display: "flex", alignItems: "center", justifyContent: "center", color: "#c8a45e", fontSize: "11px" }}>◆</div>
               <span style={{ fontFamily: "'Outfit'", fontSize: "11px", fontWeight: 600 }}>Press &amp; Sync</span>
             </div>
-            <p style={{ fontSize: "12px", lineHeight: 1.7, color: "rgba(255,255,255,.62)" }}>
+            <p style={{ fontSize: "13px", lineHeight: 1.7, color: "rgba(255,255,255,.72)" }}>
               <span style={{ color: "rgba(255,255,255,.65)" }}>Spotify</span> editorial playlisting.{" "}
               <span style={{ color: "rgba(255,255,255,.65)" }}>Earmilk</span> feature.{" "}
               Sync on <span style={{ color: "rgba(255,255,255,.65)" }}>NCIS: Los Angeles</span>. Press in American Songwriter, BroadwayWorld, Prelude Press.
