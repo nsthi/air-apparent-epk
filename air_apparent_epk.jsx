@@ -13,7 +13,7 @@ const LINKS = {
   askingYou: "https://open.spotify.com/track/5CngrG6NkWhL1lnfYRuvnH",
   rip: "https://open.spotify.com/album/6vtNJc5EvkmDFoYt7PBfXk",
   aSides: "https://open.spotify.com/artist/1t4CeVXKlDWTwwroCmPdk8",
-  kpopDemos: "https://soundcloud.com/airapparent/sets/kpop-pitches-for-hybe/s-WuPOhQuXAYg",
+  kpopDemos: "https://soundcloud.com/airapparent/sets/2026-kpop-sampler-1/s-LwHO8AI8qe0",
   video100: "https://www.youtube.com/watch?v=9uXYUhV7-Tg",
   videoTH: "https://www.youtube.com/watch?v=KQUCNyKeUJA",
   krystaYoungs: "https://open.spotify.com/artist/6R44YeR0cv8sCeCi2GUWAf",
