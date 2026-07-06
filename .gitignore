@@ -11,3 +11,10 @@ design_updates/
 
 # Stray video/asset folders the user drops in for reference.
 video/
+
+# Secrets — never commit; real values live in ~/.secrets/<repo>/
+.env
+.env.*
+!.env.example
+credentials.json
+*.pem
