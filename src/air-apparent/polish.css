@@ -385,7 +385,7 @@ a:focus-visible, button:focus-visible, input:focus-visible,
 /* EPK has no obi sidebar — its nav starts at 0 and is sticky, not fixed. */
 .epk-nav.unified-nav { position: sticky; left: 0; }
 
-/* Brand (left column) — "AIR APPARENT" + magenta JP wordmark inline. */
+/* Brand (left column) — "AIR APPARENT" wordmark. */
 .unified-nav .left { min-width: 0; display: flex; align-items: center; }
 .unified-nav .nav-brand {
   display: inline-flex; align-items: baseline; gap: 10px;
@@ -400,13 +400,6 @@ a:focus-visible, button:focus-visible, input:focus-visible,
   font-size: 10px; letter-spacing: 0.28em;
   text-transform: uppercase; font-weight: 600;
   white-space: nowrap;
-}
-.unified-nav .nav-brand .jp {
-  font-family: var(--jp-serif); font-style: normal; font-weight: 700;
-  color: var(--magenta);
-  font-size: 13px; letter-spacing: 0.02em;
-  white-space: nowrap;
-  opacity: 0.92;
 }
 .unified-nav .nav-brand:hover { color: var(--magenta); }
 .unified-nav .nav-brand:hover .en { color: var(--magenta); }
@@ -466,7 +459,6 @@ a:focus-visible, button:focus-visible, input:focus-visible,
   .unified-nav .center { justify-content: flex-end; gap: 12px; font-size: 9px; letter-spacing: 0.18em; }
 }
 @media (max-width: 560px) {
-  .unified-nav .nav-brand .jp { display: none; }
   .unified-nav .center { gap: 10px; }
 }
 /* When the obi sidebar is hidden (<960px), the topbar should start flush

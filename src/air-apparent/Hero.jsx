@@ -136,7 +136,6 @@ export function Topbar() {
       <div className="left">
         <a href="#/" className="nav-brand" aria-label="AIR APPARENT home">
           <span className="en">AIR APPARENT</span>
-          <em className="jp">エア・アパレント</em>
         </a>
       </div>
       <nav className="center">
