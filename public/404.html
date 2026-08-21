@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>AIR APPARENT</title>
+    <script>
+      // GitHub Pages has no SPA fallback, so path URLs (/epk) land here
+      // instead of the hash routes App.jsx understands. Map and hand off.
+      var p = location.pathname.replace(/^\/|\/$/g, "").toLowerCase();
+      location.replace("/" + (p === "epk" ? "#/epk" : "") + location.search);
+    </script>
+  </head>
+  <body></body>
+</html>
